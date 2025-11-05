@@ -18,10 +18,10 @@ RUN pip install --upgrade pip \
 
 # ✅ Install NLTK data
 RUN python3 - << 'EOF'
-import nltk
-nltk.download("punkt")
-nltk.download("stopwords")
-EOF
+             import nltk
+             nltk.download("punkt")
+             nltk.download("stopwords")
+  EOF
 
 COPY . .
 
