@@ -20,6 +20,14 @@ COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
+# ✅ Pre-download NLTK data (Fixes punkt_tab missing on Cloud Run)
+RUN python3 - <<EOF
+import nltk
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('stopwords')
+EOF
+
 # Copy project code
 COPY . .
 
