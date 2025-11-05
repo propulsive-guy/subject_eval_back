@@ -7,20 +7,20 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# System dependencies for OCR / PDF / transformers
+# System dependencies for OCR / PDF / Transformers / NLP
 RUN apt-get update && apt-get install -y \
     build-essential \
     poppler-utils \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (use Docker caching)
+# Copy requirements first (Docker cache optimization)
 COPY requirements.txt .
 
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+ && pip install --no-cache-dir -r requirements.txt
 
-# ✅ Pre-download NLTK data (Fixes punkt_tab missing on Cloud Run)
+# ✅ Pre-download NLTK data (fix punkt_tab not found)
 RUN python3 - <<EOF
 import nltk
 nltk.download('punkt')
@@ -28,12 +28,12 @@ nltk.download('punkt_tab')
 nltk.download('stopwords')
 EOF
 
-# Copy project code
+# Copy project files
 COPY . .
 
-# Cloud Run default port
+# Default Cloud Run port
 ENV PORT=8080
 EXPOSE 8080
 
-# Start FastAPI
+# Run FastAPI with Uvicorn
 CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8080"]
