@@ -5,6 +5,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# System deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     poppler-utils \
@@ -13,15 +14,11 @@ RUN apt-get update && apt-get install -y \
 
 COPY requirements.txt .
 
-RUN pip install --upgrade pip \
- && pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# ✅ Install NLTK data
-RUN python3 - << 'EOF'
-             import nltk
-             nltk.download("punkt")
-             nltk.download("stopwords")
-  EOF
+# ✅ Install NLTK tokenizers (no import commands in Dockerfile!)
+RUN python3 -m nltk.downloader punkt stopwords
 
 COPY . .
 
